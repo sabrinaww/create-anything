@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>訂單管理系統｜NT$2980 一次買斷</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#C9938A;--light-pink:#F5E6E3;--soft-pink:#E8C4BC;
+  --blue:#7A9BAD;--light-blue:#E3EDF3;
+  --sage:#9AAE9B;--light-sage:#E8F0E8;
+  --cream:#FAF3EE;--bg:#F7F3EF;--white:#FFFFFF;
+  --dark:#2D2522;--medium:#6B5E58;--gray:#9B9A97;--light-gray:#E5E5E0;
+  --success:#5A9E6F;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--dark);line-height:1.7;}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+
+.hero{background:linear-gradient(180deg,var(--cream),var(--bg));padding:64px 0 48px;text-align:center;}
+.hero-badge{display:inline-block;background:var(--light-pink);color:var(--pink);font-size:13px;font-weight:700;padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.hero h1{font-size:30px;font-weight:900;line-height:1.4;margin-bottom:14px;}
+.hero h1 span{color:var(--pink);}
+.hero p{font-size:15px;color:var(--medium);max-width:480px;margin:0 auto;}
+
+.section{padding:40px 0;}
+.section-title{font-size:20px;font-weight:700;text-align:center;margin-bottom:28px;}
+
+.features{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media (max-width:520px){.features{grid-template-columns:1fr;}}
+.feature-card{background:var(--white);border:1px solid var(--light-gray);border-radius:14px;padding:20px;}
+.feature-icon{font-size:26px;margin-bottom:10px;}
+.feature-title{font-size:14.5px;font-weight:700;margin-bottom:6px;}
+.feature-desc{font-size:12.5px;color:var(--gray);line-height:1.6;}
+
+.price-card{background:var(--white);border:2px solid var(--soft-pink);border-radius:20px;padding:36px 28px;text-align:center;max-width:420px;margin:0 auto;}
+.price-label{font-size:13px;color:var(--gray);margin-bottom:6px;}
+.price-value{font-size:44px;font-weight:900;color:var(--pink);}
+.price-value sup{font-size:18px;font-weight:700;margin-right:2px;}
+.price-note{font-size:12.5px;color:var(--medium);margin-top:6px;margin-bottom:24px;}
+.cta-btn{display:block;width:100%;padding:16px;border-radius:12px;border:none;background:var(--pink);color:white;font-family:'Noto Sans TC',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s;}
+.cta-btn:hover{background:#b8786f;}
+.cta-sub{font-size:11.5px;color:var(--gray);margin-top:12px;}
+
+.demo-box{background:var(--light-blue);border-radius:14px;padding:18px 20px;text-align:center;font-size:13px;color:var(--medium);margin-top:14px;}
+.demo-box a{color:var(--blue);font-weight:700;text-decoration:underline;}
+
+.faq{max-width:560px;margin:0 auto;}
+.faq-item{background:var(--white);border:1px solid var(--light-gray);border-radius:12px;padding:16px 18px;margin-bottom:10px;}
+.faq-q{font-size:13.5px;font-weight:700;margin-bottom:6px;}
+.faq-a{font-size:12.5px;color:var(--medium);}
+
+footer{text-align:center;padding:36px 0;font-size:11.5px;color:var(--gray);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-badge">🌙 免會員登入 · 一組專屬連結搞定</div>
+    <h1>訂單管理系統<br><span>從接單到報表，一頁搞定</span></h1>
+    <p>不用登入帳號密碼，一組屬於你的專屬連結，就是你的雲端訂單管理系統。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-title">為什麼選這套系統</div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <div class="feature-title">免會員登入</div>
+        <div class="feature-desc">不用記帳號密碼，一組專屬連結就是你的系統，加入書籤隨時打開。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">資料各自獨立</div>
+        <div class="feature-desc">每個人都有自己專屬的資料庫，彼此完全看不到對方的資料。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">一站管理</div>
+        <div class="feature-desc">訂單、客戶、庫存、追蹤提醒、營業報表，通通在同一個地方。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📔</div>
+        <div class="feature-title">感恩日記</div>
+        <div class="feature-desc">忙碌之餘也能記錄每天的心情與復盤，做生意也照顧自己。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☁️</div>
+        <div class="feature-title">雲端儲存</div>
+        <div class="feature-desc">換裝置、換瀏覽器資料都在，隨時可以匯出 JSON / CSV 備份。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">利潤自動試算</div>
+        <div class="feature-desc">商品成本、耗材、折扣一次算清楚，每筆訂單淨利潤一目了然。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-title">價格方案</div>
+    <div class="price-card">
+      <div class="price-label">一次買斷方案</div>
+      <div class="price-value"><sup>NT$</sup>2,980</div>
+      <div class="price-note">付款一次，永久使用，無月費</div>
+      <!-- 目前先連到官方 LINE 詢問／購買，等綠界或藍新的收款連結申請好之後，把下面 href 換成金流連結即可 -->
+      <a class="cta-btn" href="https://lin.ee/o8zgTVv" target="_blank" rel="noopener">💬 加入 LINE 詢問購買</a>
+      <div class="cta-sub">點擊後會開啟 LINE，加入好友後即可詢問付款方式</div>
+    </div>
+    <div class="demo-box">
+      想先看看實際操作畫面？<br>
+      <a href="https://sabrinaww.github.io/create-anything/" target="_blank" rel="noopener">點我看系統實際畫面 →</a>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-title">常見問題</div>
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q">需要學寫程式或架設網站嗎？</div>
+        <div class="faq-a">不用，付款後你會拿到一組專屬連結，打開就能直接使用。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">資料存在哪裡安全嗎？</div>
+        <div class="faq-a">所有資料都存在雲端資料庫，只有你的專屬連結能打開，也可以隨時自行匯出備份。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">會不會過一段時間就要再付費？</div>
+        <div class="faq-a">不會，這是一次買斷方案，付款一次即可永久使用。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>訂單管理系統 · 如有任何問題歡迎透過 LINE 聯繫我們</footer>
+
+</body>
+</html>
