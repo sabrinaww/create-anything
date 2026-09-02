@@ -250,6 +250,7 @@ tr:hover td{background:var(--cream);}
     <div class="nav-item" onclick="switchPage('reports',this)"><span class="nav-icon">📈</span><span>營業報表</span></div>
     <div class="nav-item" onclick="switchPage('products',this)"><span class="nav-icon">🛍️</span><span>商品管理</span></div>
     <div class="nav-item" onclick="switchPage('data-tools',this)"><span class="nav-icon">💾</span><span>資料工具</span></div>
+    <div class="nav-item" onclick="switchPage('journal',this)"><span class="nav-icon">📔</span><span>感恩日記</span></div>
   </nav>
 </div>
 <div class="main">
@@ -529,6 +530,24 @@ tr:hover td{background:var(--cream);}
       </div>
     </div>
 
+    <!-- JOURNAL -->
+    <div class="page" id="page-journal">
+      <div class="card">
+        <div class="section-head"><div class="section-title">📔 <span id="journalEditorLabel">今天</span></div></div>
+        <div class="notice">每次打開這頁會自動跳到今天，讓你寫今天的日記；今天已經寫過的話會直接載入原本內容，改完按儲存就好。想改以前寫過的，點下面歷史日記裡的任一篇即可。</div>
+        <div class="form-group" style="margin-bottom:12px;"><textarea id="journalContent" placeholder="今天的心情、值得感恩的事、想復盤的地方..." style="min-height:160px;"></textarea></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="saveJournalEntry()">💾 儲存</button>
+          <button class="btn btn-danger" id="journalDeleteBtn" style="display:none;" onclick="deleteJournalEntry(journalEditDate)">🗑️ 刪除這篇</button>
+          <button class="btn btn-secondary" id="journalBackToTodayBtn" style="display:none;" onclick="backToTodayJournal()">↩️ 回到今天</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-head"><div class="section-title">📖 歷史日記</div></div>
+        <div id="journalHistoryList"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 </div>
@@ -683,6 +702,8 @@ let products=[];
 let overheads=[];
 let orders=[];
 let trash=[];
+let journal=[];
+let journalEditDate=null;
 let editProductId=null, editOverheadId=null;
 let orderItems=[], overheadItems=[];
 let currentReportPeriod='month', currentFollowupTab='all', currentCustPeriod='month';
@@ -695,7 +716,7 @@ async function save(){
   if(!currentShopId)return;
   if(saving){pendingResave=true;return;} // 避免同時觸發多次寫入互相蓋過
   saving=true;
-  const payload={products,overheads,orders,trash};
+  const payload={products,overheads,orders,trash,journal};
   const {error}=await sb.rpc('update_shop_data',{shop_id:currentShopId,new_data:payload});
   saving=false;
   if(error){
@@ -705,7 +726,7 @@ async function save(){
 }
 
 // ── NAV ──
-const PAGE_TITLES={'dashboard':'總覽 Dashboard','new-order':'新增訂單','orders':'訂單管理','customers':'客戶管理','followup':'追蹤提醒','reports':'營業報表','products':'商品管理','data-tools':'資料工具'};
+const PAGE_TITLES={'dashboard':'總覽 Dashboard','new-order':'新增訂單','orders':'訂單管理','customers':'客戶管理','followup':'追蹤提醒','reports':'營業報表','products':'商品管理','data-tools':'資料工具','journal':'感恩日記'};
 function switchPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -720,6 +741,7 @@ function switchPage(id,el){
   if(id==='products') renderProducts();
   if(id==='data-tools') renderDataSummary();
   if(id==='new-order') initOrderForm();
+  if(id==='journal') initJournalPage();
   closeSidebar(); // 手機版選完頁面後自動收合選單
 }
 
@@ -1746,6 +1768,63 @@ function deleteOverhead(id){if(!confirm('確定刪除此耗材？'))return;overh
 // ── DATA TOOLS ──
 function renderDataSummary(){renderTrash();}
 
+// ── JOURNAL ──
+function getTodayDateStr(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function findJournalEntry(dateStr){return journal.find(j=>j.date===dateStr);}
+function initJournalPage(){
+  journalEditDate=getTodayDateStr();
+  loadJournalEditor();
+  renderJournalHistory();
+}
+function loadJournalEditor(){
+  const isToday=journalEditDate===getTodayDateStr();
+  const entry=findJournalEntry(journalEditDate);
+  document.getElementById('journalEditorLabel').textContent=isToday?`今天（${journalEditDate}）`:journalEditDate;
+  document.getElementById('journalContent').value=entry?entry.content:'';
+  document.getElementById('journalDeleteBtn').style.display=entry?'inline-flex':'none';
+  document.getElementById('journalBackToTodayBtn').style.display=isToday?'none':'inline-flex';
+}
+function saveJournalEntry(){
+  const content=document.getElementById('journalContent').value.trim();
+  if(!content){alert('先寫點什麼再儲存喔');return;}
+  const existing=findJournalEntry(journalEditDate);
+  if(existing){existing.content=content;existing.updatedAt=new Date().toISOString();}
+  else{journal.unshift({id:genId('J'),date:journalEditDate,content,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});}
+  save();
+  loadJournalEditor();
+  renderJournalHistory();
+  alert('✅ 日記已儲存！');
+}
+function deleteJournalEntry(dateStr){
+  if(!confirm('確定要刪除這篇日記嗎？刪除後沒辦法復原。'))return;
+  journal=journal.filter(j=>j.date!==dateStr);
+  save();
+  if(journalEditDate===dateStr)loadJournalEditor();
+  renderJournalHistory();
+}
+function editJournalEntry(dateStr){
+  journalEditDate=dateStr;
+  loadJournalEditor();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function backToTodayJournal(){
+  journalEditDate=getTodayDateStr();
+  loadJournalEditor();
+}
+function escapeHtml(str){return (str||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function renderJournalHistory(){
+  const today=getTodayDateStr();
+  const list=[...journal].filter(j=>j.date!==today).sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('journalHistoryList').innerHTML=list.length?list.map(j=>`
+    <div class="history-item" onclick="editJournalEntry('${j.date}')">
+      <div><div class="history-product">${j.date}</div><div class="history-date">${escapeHtml((j.content||'').slice(0,40))}${j.content&&j.content.length>40?'…':''}</div></div>
+      <button class="qty-btn" onclick="event.stopPropagation();deleteJournalEntry('${j.date}')" style="background:#fef0f0;color:var(--danger);">✕</button>
+    </div>`).join(''):'<div class="empty"><div class="empty-icon">📔</div><div class="empty-text">還沒有歷史日記</div></div>';
+}
+
 function todayStamp(){
   const d=new Date();
   return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
@@ -1889,6 +1968,7 @@ async function loadShop(id){
   overheads=(d.overheads&&d.overheads.length)?d.overheads.map(o=>({calcType:'fixed',rate:0,cat:'其他',...o})):DEFAULT_OVERHEADS.map(o=>({...o}));
   orders=d.orders||[];
   trash=d.trash||[];
+  journal=d.journal||[];
   document.getElementById('sidebarShopName').textContent='🌙 '+(currentShopName||'訂單系統');
   document.title=(currentShopName?currentShopName+' · ':'')+'訂單管理系統';
   showScreen('mainApp');
